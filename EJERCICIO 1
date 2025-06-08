@@ -1,0 +1,130 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+int main() {
+    string producto;
+    int cantidad, opcion;
+    char continuar;
+
+    // Datos iniciales
+    int stockTV = 200, stockCel = 1500, stockEq = 150;
+    float precioTV = 3500, precioCel = 2500, precioEq = 1600;
+    float descTV = 0.10, descCel = 0.20, descEq = 0.15;
+
+    // Variables de control
+    int pedidosTV = 0;
+    int clientesCompletos = 0;
+    int descuentosCel = 0;
+    int totalTV = 0, totalCel = 0, totalEq = 0;
+    float totalMontoTV = 0, totalMontoCel = 0, totalMontoEq = 0;
+
+    do {
+        cout << "\n--- MENU DE PRODUCTOS ---\n";
+        cout << "1. TV\n";
+        cout << "2. Celulares\n";
+        cout << "3. Equipos\n";
+        cout << "Ingrese opción (1-3): ";
+        cin >> opcion;
+
+        switch (opcion) {
+            case 1:
+                producto = "TV";
+                break;
+            case 2:
+                producto = "Celulares";
+                break;
+            case 3:
+                producto = "Equipos";
+                break;
+            default:
+                cout << "Opción inválida.\n";
+                continue;
+        }
+
+        do {
+            cout << "Ingrese cantidad deseada: ";
+            cin >> cantidad;
+            if (cantidad <= 0)
+                cout << "Cantidad inválida. Intente de nuevo.\n";
+        } while (cantidad <= 0);
+
+        float precio, descuento, montoBruto, montoDescuento, montoPagar;
+        int* stockActual;
+        float* montoTotal;
+        int* totalVendidas;
+
+        if (producto == "TV") {
+            precio = precioTV;
+            descuento = descTV;
+            stockActual = &stockTV;
+            montoTotal = &totalMontoTV;
+            totalVendidas = &totalTV;
+        } else if (producto == "Celulares") {
+            precio = precioCel;
+            descuento = descCel;
+            stockActual = &stockCel;
+            montoTotal = &totalMontoCel;
+            totalVendidas = &totalCel;
+        } else {
+            precio = precioEq;
+            descuento = descEq;
+            stockActual = &stockEq;
+            montoTotal = &totalMontoEq;
+            totalVendidas = &totalEq;
+        }
+
+        if (cantidad > *stockActual) {
+            cout << "Stock insuficiente. Solo hay " << *stockActual << " unidades.\n";
+            cout << "Desea comprar esa cantidad disponible? (S/N): ";
+            char rpta;
+            cin >> rpta;
+            if (rpta == 'S' || rpta == 's') {
+                cantidad = *stockActual;
+            } else {
+                cout << "Pedido cancelado.\n";
+                goto continuar_bucle;
+            }
+        }
+
+        // Cálculos
+        montoBruto = cantidad * precio;
+        montoDescuento = montoBruto * descuento;
+        montoPagar = montoBruto - montoDescuento;
+
+        // Actualizar stock y contadores
+        *stockActual -= cantidad;
+        *totalVendidas += cantidad;
+        *montoTotal += montoPagar;
+
+        if (producto == "TV") pedidosTV++;
+        if (producto == "Celulares" && montoDescuento > 0) descuentosCel++;
+        if (cantidad > 0 && cantidad * precio == montoBruto) clientesCompletos++;
+
+        cout << fixed << setprecision(2);
+        cout << "Monto bruto: S/ " << montoBruto << endl;
+        cout << "Descuento: S/ " << montoDescuento << endl;
+        cout << "Monto a pagar: S/ " << montoPagar << endl;
+
+        continuar_bucle:
+        cout << "¿Desea registrar otro pedido? (S/N): ";
+        cin >> continuar;
+
+    } while (continuar == 'S' || continuar == 's');
+
+    // Reporte Final
+    cout << "\n--- REPORTE FINAL ---\n";
+    cout << "a) Pedidos de TV: " << pedidosTV << endl;
+    cout << "b) Clientes totalmente atendidos: " << clientesCompletos << endl;
+    cout << "c) Descuentos otorgados en Celulares: " << descuentosCel << endl;
+    cout << "d) Total de unidades vendidas:\n";
+    cout << "   TV: " << totalTV << ", Celulares: " << totalCel << ", Equipos: " << totalEq << endl;
+    cout << "e) Stock restante:\n";
+    cout << "   TV: " << stockTV << ", Celulares: " << stockCel << ", Equipos: " << stockEq << endl;
+    cout << "f) Monto total vendido por producto:\n";
+    cout << "   TV: S/ " << totalMontoTV << ", Celulares: S/ " << totalMontoCel << ", Equipos: S/ " << totalMontoEq << endl;
+
+    return 0;
+}
