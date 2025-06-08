@@ -1,0 +1,115 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {
+    char genero, talla, usaLentes, tieneCelular, continuar;
+    int edad;
+
+    // Contadores
+    int mujeresM = 0, hombresXL = 0;
+    int mujeresConLentes = 0, hombresConCel = 0, mujeresSinCel = 0;
+    int personasConAmbos = 0;
+
+    // Promedios
+    int sumaEdadMujeresLentes = 0, cuentaMujeresLentes = 0;
+    int sumaEdadHombresCel = 0, cuentaHombresCel = 0;
+
+    do {
+        cout << "\n--- INGRESO DE DATOS ---\n";
+
+        // Validar género
+        do {
+            cout << "Género (M/F): ";
+            cin >> genero;
+            genero = toupper(genero);
+            if (genero != 'M' && genero != 'F')
+                cout << "Entrada inválida. Intente nuevamente.\n";
+        } while (genero != 'M' && genero != 'F');
+
+        // Validar talla
+        do {
+            cout << "Talla (S/M/L/XL): ";
+            cin >> talla;
+            talla = toupper(talla);
+            if (talla != 'S' && talla != 'M' && talla != 'L' && talla != 'X')
+                cout << "Talla inválida. Intente nuevamente.\n";
+        } while (talla != 'S' && talla != 'M' && talla != 'L' && talla != 'X');
+
+        // Validar lentes
+        do {
+            cout << "¿Usa lentes? (S/N): ";
+            cin >> usaLentes;
+            usaLentes = toupper(usaLentes);
+            if (usaLentes != 'S' && usaLentes != 'N')
+                cout << "Entrada inválida. Intente nuevamente.\n";
+        } while (usaLentes != 'S' && usaLentes != 'N');
+
+        // Validar celular
+        do {
+            cout << "¿Tiene celular? (S/N): ";
+            cin >> tieneCelular;
+            tieneCelular = toupper(tieneCelular);
+            if (tieneCelular != 'S' && tieneCelular != 'N')
+                cout << "Entrada inválida. Intente nuevamente.\n";
+        } while (tieneCelular != 'S' && tieneCelular != 'N');
+
+        // Validar edad
+        do {
+            cout << "Edad: ";
+            cin >> edad;
+            if (edad <= 0)
+                cout << "Edad inválida. Intente nuevamente.\n";
+        } while (edad <= 0);
+
+        // a) Mujeres con talla M, hombres con XL
+        if (genero == 'F' && talla == 'M') mujeresM++;
+        if (genero == 'M' && talla == 'X') hombresXL++;
+
+        // b) Mujeres que usan lentes
+        if (genero == 'F' && usaLentes == 'S') {
+            mujeresConLentes++;
+            sumaEdadMujeresLentes += edad;
+            cuentaMujeresLentes++;
+        }
+
+        // c) Hombres con celulares
+        if (genero == 'M' && tieneCelular == 'S') {
+            hombresConCel++;
+            sumaEdadHombresCel += edad;
+            cuentaHombresCel++;
+        }
+
+        // d) Mujeres sin celular
+        if (genero == 'F' && tieneCelular == 'N') mujeresSinCel++;
+
+        // e) Personas con lentes y celular
+        if (usaLentes == 'S' && tieneCelular == 'S') personasConAmbos++;
+
+        cout << "¿Desea ingresar otra persona? (S/N): ";
+        cin >> continuar;
+        continuar = toupper(continuar);
+
+    } while (continuar == 'S');
+
+    // Reportes
+    cout << "\n--- REPORTE FINAL ---\n";
+    cout << "a) Mujeres con talla M: " << mujeresM << ", Hombres con talla XL: " << hombresXL << endl;
+    cout << "b) Mujeres que usan lentes: " << mujeresConLentes << endl;
+    cout << "c) Hombres con celulares: " << hombresConCel << endl;
+    cout << "d) Mujeres sin celulares: " << mujeresSinCel << endl;
+    cout << "e) Personas que usan lentes y tienen celular: " << personasConAmbos << endl;
+
+    cout << fixed << setprecision(2);
+    if (cuentaMujeresLentes > 0)
+        cout << "f) Edad promedio de mujeres con lentes: " << (float)sumaEdadMujeresLentes / cuentaMujeresLentes << endl;
+    else
+        cout << "f) No hay datos para calcular edad promedio de mujeres con lentes.\n";
+
+    if (cuentaHombresCel > 0)
+        cout << "g) Edad promedio de hombres con celular: " << (float)sumaEdadHombresCel / cuentaHombresCel << endl;
+    else
+        cout << "g) No hay datos para calcular edad promedio de hombres con celular.\n";
+
+    return 0;
+}
